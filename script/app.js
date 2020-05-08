@@ -1,5 +1,5 @@
 Vue.component('filtering', {
-  props: ['listings'],
+  props: ['listings', 'filteredLength'],
   data: function() {
     return {
       searchTerm: "",
@@ -11,6 +11,21 @@ Vue.component('filtering', {
   computed: {
     trimmedSearchTerm: function() {
       return this.searchTerm.trim();
+    },
+    countString: function() {
+      if (!this.filterActive) {
+        return ''
+      } else {
+        return `showing ${this.filteredLength} of ${this.listings.length}`
+      }
+    },
+    filterActive: function () {
+      return (
+        this.trimmedSearchTerm.length >= 3 ||
+        !this.buying ||
+        !this.selling ||
+        !this.unknown
+      )
     }
   },
   methods: {
@@ -18,7 +33,7 @@ Vue.component('filtering', {
       this.$emit(
         'filtered-listings-updated',
         this.listings.filter((listing) => {
-          if (this.trimmedSearchTerm.length >= 3) {
+          if (this.filterActive) {
             return this.searchFilter(listing) && this.typeFilter(listing);
           } else {
             return this.typeFilter(listing);
@@ -40,6 +55,7 @@ Vue.component('filtering', {
     <div class='filtering'>
       <div class='search'>
         <input type='text' v-model:value="searchTerm" placeholder="Enter a search term" class="form-control form-control-sm" @keyup="emitFilteredListings"/>
+        <span class='filter-count'>{{countString}}</span>
       </div>
       <div class='type-filter'>
         <input type="checkbox" id="show-selling" v-model="selling" @change="emitFilteredListings"/>
@@ -87,11 +103,11 @@ Vue.component('listing-card', {
   template: `
     <div class="card" :class="{expanded: expanded}">
       <div class="row no-gutters">
-        <div class="col-md-3">
+        <div :class="{ 'col-md-3': imageUrl }">
           <div v-if="!imageUrl" class="no-image"></div>
           <a v-if="imageUrl" :href="imageUrl"><img  :src="imageUrl" class="card-img"></a>
         </div>
-        <div class="col-md-9">
+        <div :class="{ 'col-md-9': imageUrl, 'col-md-12': !imageUrl }">
           <div class="card-body" @click="expand">
             <h5 class="card-title">
               <div class="row">
@@ -143,6 +159,15 @@ let app = new Vue({
     if (newListings) {
       this.listings = newListings;
       this.filteredListings = newListings;
+    }
+  },
+  computed: {
+    safeFilteredListingsLength: function() {
+      if (this.filteredListings) {
+        return this.filteredListings.length
+      } else {
+        return this.listings.length
+      }
     }
   },
   methods: {
