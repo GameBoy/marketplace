@@ -52,12 +52,12 @@ Vue.component('filtering', {
     }
   },
   template: `
-    <div class='filtering'>
-      <div class='search'>
+    <div class='filtering row'>
+      <div class='search col-sm-7'>
         <input type='text' v-model:value="searchTerm" placeholder="Enter a search term" class="form-control form-control-sm" @keyup="emitFilteredListings"/>
         <span class='filter-count'>{{countString}}</span>
       </div>
-      <div class='type-filter'>
+      <div class='type-filter col-sm-5'>
         <input type="checkbox" id="show-selling" v-model="selling" @change="emitFilteredListings"/>
         <span class="badge badge-primary"><label for="show-selling">Selling</label></span>
         <input type="checkbox" id="show-buying" v-model="buying" @change="emitFilteredListings"/>
@@ -88,9 +88,10 @@ Vue.component('listing-card', {
     }
   },
   methods: {
-    expand: function() {
+    expand: function(e) {
       this.$emit('close-all')
       this.expanded = true
+      e.stopImmediatePropagation()
     },
     close: function() {
       this.expanded = false
@@ -110,35 +111,33 @@ Vue.component('listing-card', {
         <div :class="{ 'col-md-9': imageUrl, 'col-md-12': !imageUrl }">
           <div class="card-body" @click="expand">
             <h5 class="card-title">
-              <div class="row">
-                <div class="col-md-9">
-                  <span v-if="listing.sell()" class="badge badge-primary">Selling</span>
-                  <span v-if="listing.buy()" class="badge badge-success">Buying</span>
-                  <span v-if="unknown" class="badge badge-secondary">???</span>
-                  {{listing.title()}}
+              <span v-if="listing.sell()" class="badge badge-primary">Selling</span>
+              <span v-if="listing.buy()" class="badge badge-success">Buying</span>
+              <span v-if="unknown" class="badge badge-secondary">???</span>
+              {{listing.title()}}
 
-                  <div class="created">
-                    <span class="text-muted">
-                      posted
-                      {{ listing.created }}
-                      by
-                    </span>
-                    <img width="20" class="discord-avatar" :src="listing.avatarUrl">
-                    <span>{{listing.user()}}</span>
-                  </div>
-                </div>
-
-                <div class="col-md-3">
-                  <a :href="listing.discordUrl()" target="_blank" class="btn btn-sm btn-info pull-right">Open In Discord</a>
-                </div>
+              <div class="created">
+                <span class="text-muted">
+                  posted
+                  {{ listing.created }}
+                  by
+                </span>
+                <img width="20" class="discord-avatar" :src="listing.avatarUrl">
+                <span>{{listing.user()}}</span>
               </div>
             </h5>
+
             <p class="card-text listing-text" v-html="bodyHtml" ref="text"></p>
 
-            <div style="z-index: 2; text-align: right;">
-              <button class="btn btn-sm btn-outline-secondary" @click="toggleExpanded">
-                {{ expanded ? '▲' : '▼' }}
-              </button>
+            <div class="row listing-footer">
+              <div class="col-9">
+                <a :href="listing.discordUrl()" target="_blank" class="btn btn-sm btn-outline-info">Open In Discord</a>
+              </div>
+              <div class="col-3">
+                <button class="btn btn-sm btn-outline-secondary pull-right" @click="toggleExpanded">
+                  {{ expanded ? '▲' : '▼' }}
+                </button>
+              </div>
             </div>
           </div>
         </div>

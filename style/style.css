@@ -44,7 +44,7 @@ header {
   flex-grow: 1;
   max-height: 150px;
   overflow: hidden;
-  margin-bottom: 0;
+  /*margin-bottom: ;*/
 }
 
 .expanded .listing-text {
@@ -66,19 +66,21 @@ header {
   display: none;
 }
 
-.btn-info {
+.btn-outline-info {
   border-color: #7289DA;
-  background-color: #7289DA;
+  color: #7289DA;
 }
 
-.btn-info:hover {
-  border-color: #4d6cda;
-  background-color: #4d6cda;
+.btn-outline-info:hover {
+  border-color: #7289DA;
+  background-color: #7289DA;
+  color: white;
 }
 
 .btn-info:focus {
-  border-color: #4d6cda;
-  background-color: #4d6cda;
+  border-color: #7289DA;
+  background-color: #7289DA;
+  color: white;
 }
 
 .no-image {
@@ -111,11 +113,6 @@ img.discord-avatar {
 .filtering {
   margin-top: 40px;
   margin-bottom: 6px;
-  display: flex;
-}
-
-.filtering .search {
-  flex: 1;
 }
 
 .search .form-control {
@@ -131,6 +128,16 @@ img.discord-avatar {
 
 .filtering .badge {
   margin-right: 6px;
+}
+
+.filtering .type-filter {
+  text-align: right;
+}
+
+@media (max-width: 575.98px) {
+  .filtering .type-filter {
+    text-align: left;
+  }
 }
 
 .filtering label {
