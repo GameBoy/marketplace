@@ -1,7 +1,11 @@
 const DATA_URL = 'https://gameboy.github.io/dmgAPI/market.json'
 const TITLE_REGEX = /\.|\\n|,/g
 const BUY_REGEX = /buy|buying|WTB|looking|trade/ig
-const SELL_REGEX = /sell|selling|WTS/ig
+const WTB_REGEX = /WTB/g
+const BUY = 'buy'
+const SELL_REGEX = /sell|selling|WTS|shipped/ig
+const WTS_REGEX = /WTS/g
+const SELL = 'sell'
 const BASE_DISCORD_URL = "discord://discordapp.com/channels/246604458744610816/336895311081373707/" // just add message_id
 
 const BUY_OVERRIDES = {
@@ -56,8 +60,11 @@ class Listing {
     this.avatarUrl = messageData.avatar_url
     this.attachments = messageData.attachments
 
-    this.splitMessage = messageData.message.split('\n')
+    this.message = messageData.message
+    this.splitMessage = this.message.split('\n')
     this.words = this.splitMessage.map(line => line.split(' ')).flat()
+
+    this.setListingType()
   }
 
   user() {
@@ -78,45 +85,40 @@ class Listing {
       if (title.length > 200) {
         title = title.substring(0, 197) + "...";
       }
-      this._title = title
+      this._title = this.formatLineForWTSWTB(title)
     }
 
     return this._title
   }
 
-  sell() {
-    if (!this._sell && !BUY_OVERRIDES[this.messageId]) {
-      this._sell = SELL_OVERRIDES[this.messageId] || false;
-
-      for (let i = 0; i < this.words.length; i++) {
-        const word = this.words[i];
-        if (word.match(SELL_REGEX)) {
-          this._sell = true;
-          break;
-        }
-      }
-
-      if ((this.attachments[0]) || (this.messageData.message.match(/\$/g) || []).length > 1) {
-        this._sell = true;
+  setListingType() {
+    if (this._listingType === undefined) {
+      if (SELL_OVERRIDES[this.messageId]) {
+        this._listingType = SELL;
+      } else if (BUY_OVERRIDES[this.messageId]) {
+        this._listingType = BUY;
+      } else if (this.message.match(WTS_REGEX) && !this.message.match(WBS_REGEX)) {
+        this._listingType = SELL;
+      } else if (this.message.match(WTB_REGEX) && !this.message.match(WTS_REGEX)) {
+        this._listingType = BUY;
+      } else if (this.message.match(SELL_REGEX)) {
+        this._listingType = SELL;
+      } else if (this.message.match(BUY_REGEX)) {
+        this._listingType = BUY;
+      } else {
+        this._listingType = null;
       }
     }
 
-    return this._sell;
+    return this._listingType;
+  }
+
+  sell() {
+    return this._listingType == SELL;
   }
 
   buy() {
-    if (!this._buy && !SELL_OVERRIDES[this.messageId]) {
-      this._buy = BUY_OVERRIDES[this.messageId] || false;
-
-      for (let i = 0; i < this.words.length; i++) {
-        const word = this.words[i];
-        if (word.match(BUY_REGEX) && !this.sell()) { // sell can not reference buy or infinite loop will happen!
-          this._buy = true;
-        }
-      }
-    }
-
-    return this._buy;
+    return this._listingType == BUY;
   }
 
   imageUrls() {
@@ -137,7 +139,6 @@ class Listing {
           this._imageUrls.push(word)
         }
       }
-
     }
 
     return this._imageUrls;
@@ -182,6 +183,20 @@ class Listing {
         formattedLine += `<a href=${word}>${word}</a> `
       } else if (word.match(/(\d*)\$(\d*)/g)){
         formattedLine += `<span class="text-bold">${word}</span> `
+      } else {
+        formattedLine += `${word} `
+      }
+    }
+    return this.formatLineForWTSWTB(formattedLine)
+  }
+
+  formatLineForWTSWTB(line) {
+    let formattedLine = ''
+    const words = line.split(' ')
+    for (let i = 0; i < words.length; i++) {
+      const word = words[i]
+      if(word.match(/<:WTB:\d*>/g)) {
+        formattedLine += 'WTB '
       } else {
         formattedLine += `${word} `
       }
