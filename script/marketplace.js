@@ -1,12 +1,23 @@
 const DATA_URL = 'https://gameboy.github.io/dmgAPI/market.json'
 const TITLE_REGEX = /\.|\\n|,/g
-const BUY_REGEX = /buy|buying|WTB|looking/ig
+const BUY_REGEX = /buy|buying|WTB|looking|trade/ig
 const SELL_REGEX = /sell|selling|WTS/ig
 const BASE_DISCORD_URL = "discord://discordapp.com/channels/246604458744610816/336895311081373707/" // just add message_id
 
+const BUY_OVERRIDES = {
+  '706854690834350082': true,
+  '705304855895605318': true,
+  '704512974827552770': true,
+  '699381569122598924': true
+}
+const SELL_OVERRIDES = {
+  '703956817184555048': true,
+  '704437780578828319': true,
+  '707823474957090886': true
+}
+
 class DataFetcher {
   cachedListings() {
-    // return [new Listing({ user: 'orangegle', message: "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc."}),
     return this.buildListings(JSON.parse(localStorage.getItem('listingData')) || []) 
   }
 
@@ -16,12 +27,10 @@ class DataFetcher {
         return response.json()
       })
       .then((jsonData) => {
-        console.log(jsonData);
         if (jsonData.length > 0) {
           localStorage.setItem('listingData', JSON.stringify(jsonData))
           return this.buildListings(jsonData);
         } else {
-          console.log("empty listing data")
           return null;
         }
       })
@@ -76,8 +85,8 @@ class Listing {
   }
 
   sell() {
-    if (!this._sell) {
-      this._sell = false;
+    if (!this._sell && !BUY_OVERRIDES[this.messageId]) {
+      this._sell = SELL_OVERRIDES[this.messageId] || false;
 
       for (let i = 0; i < this.words.length; i++) {
         const word = this.words[i];
@@ -96,8 +105,8 @@ class Listing {
   }
 
   buy() {
-    if (!this._buy) {
-      this._buy = false;
+    if (!this._buy && !SELL_OVERRIDES[this.messageId]) {
+      this._buy = BUY_OVERRIDES[this.messageId] || false;
 
       for (let i = 0; i < this.words.length; i++) {
         const word = this.words[i];
@@ -180,4 +189,3 @@ class Listing {
     return formattedLine
   }
 }
-
