@@ -125,11 +125,17 @@ class Listing {
     if (!this._imageUrls) {
       this._imageUrls = []
 
-      if (this.attachments && this.attachments.length > 0) {
-        if (this.attachments.slice(0,2) == "['") {
-          this._imageUrls.push(this.attachments.slice(2, this.attachments.length - 2))
-        } else {
-          this._imageUrls.push(this.attachments)
+      if (typeof(this.attachments) == "string") {
+        if (this.attachments && this.attachments.length > 0) {
+          if (this.attachments.slice(0,2) == "['") {
+            this._imageUrls.push(this.attachments.slice(2, this.attachments.length - 2))
+          } else {
+            this._imageUrls.push(this.attachments)
+          }
+        }
+      } else {
+        for (let i = 0; i < this.attachments.length; i++) {
+          this._imageUrls.push(this.attachments[i]);
         }
       }
 
