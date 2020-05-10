@@ -97,7 +97,7 @@ class Listing {
         this._listingType = SELL;
       } else if (BUY_OVERRIDES[this.messageId]) {
         this._listingType = BUY;
-      } else if (this.message.match(WTS_REGEX) && !this.message.match(WBS_REGEX)) {
+      } else if (this.message.match(WTS_REGEX) && !this.message.match(WTB_REGEX)) {
         this._listingType = SELL;
       } else if (this.message.match(WTB_REGEX) && !this.message.match(WTS_REGEX)) {
         this._listingType = BUY;
