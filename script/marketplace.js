@@ -125,15 +125,7 @@ class Listing {
     if (!this._imageUrls) {
       this._imageUrls = []
 
-      if (typeof(this.attachments) == "string") {
-        if (this.attachments && this.attachments.length > 0) {
-          if (this.attachments.slice(0,2) == "['") {
-            this._imageUrls.push(this.attachments.slice(2, this.attachments.length - 2))
-          } else {
-            this._imageUrls.push(this.attachments)
-          }
-        }
-      } else {
+      if (this.attachments){
         for (let i = 0; i < this.attachments.length; i++) {
           this._imageUrls.push(this.attachments[i]);
         }
@@ -201,8 +193,10 @@ class Listing {
     const words = line.split(' ')
     for (let i = 0; i < words.length; i++) {
       const word = words[i]
-      if(word.match(/<:WTB:\d*>/g)) {
+      if (word.match(/<:WTB:\d*>/g) || word.match(/<:Buying:\d*>/g)) {
         formattedLine += 'WTB '
+      } else if (word.match(/<:WTS:\d*>/g) || word.match(/<:Selling:\d*>/g)) {
+        formattedLine += 'WTS '
       } else {
         formattedLine += `${word} `
       }
