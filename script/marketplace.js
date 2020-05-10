@@ -193,10 +193,14 @@ class Listing {
     const words = line.split(' ')
     for (let i = 0; i < words.length; i++) {
       const word = words[i]
-      if (word.match(/<:WTB:\d*>/g) || word.match(/<:Buying:\d*>/g)) {
+      if (word.match(/<:WTB:\d*>/g)) {
         formattedLine += 'WTB '
-      } else if (word.match(/<:WTS:\d*>/g) || word.match(/<:Selling:\d*>/g)) {
+      } else if (word.match(/<:Buying:\d*>/g)) {
+        formattedLine += 'Buying '
+      } else if (word.match(/<:WTS:\d*>/g)) {
         formattedLine += 'WTS '
+      } else if (word.match(/<:Selling:\d*>/g)) {
+        formattedLine += 'Selling '
       } else {
         formattedLine += `${word} `
       }
