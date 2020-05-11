@@ -109,6 +109,10 @@ img.discord-avatar {
   margin-bottom: 0.5em;
 }
 
+.listing-footer {
+  flex-grow: 1;
+}
+
 .no-listings {
   color: white;
   text-align: center;

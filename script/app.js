@@ -128,7 +128,7 @@ Vue.component('listing-card', {
 
             <p class="card-text listing-text" v-html="bodyHtml" ref="text"></p>
 
-            <div class="row listing-footer">
+            <div class="row listing-footer align-items-end">
               <div class="col-9">
                 <a :href="listing.discordUrl()" target="_blank" class="btn btn-sm btn-outline-info">Open In Discord</a>
               </div>
