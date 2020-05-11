@@ -105,8 +105,7 @@ Vue.component('listing-card', {
     <div class="card" :class="{expanded: expanded}">
       <div class="row no-gutters">
         <div :class="{ 'col-md-3': imageUrl }">
-          <div v-if="!imageUrl" class="no-image"></div>
-          <a v-if="imageUrl" :href="imageUrl"><img  :src="imageUrl" class="card-img"></a>
+          <a v-if="imageUrl" :href="imageUrl"><img :src="imageUrl" class="card-img"></a>
         </div>
         <div :class="{ 'col-md-9': imageUrl, 'col-md-12': !imageUrl }">
           <div class="card-body" @click="expand">
@@ -172,7 +171,8 @@ let app = new Vue({
   methods: {
     closeAll: function() {
       for (let i = 0; i < this.listings.length; i++) {
-        this.$refs[this.listings[i].messageId][0].close()
+        const listing = this.$refs[this.listings[i].messageId][0]
+        if (listing) { listing.close() }
       }
     },
     updateFilteredListings: function(filteredListings) {

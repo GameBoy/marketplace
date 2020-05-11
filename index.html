@@ -31,6 +31,9 @@
           <div>
             <listing-card :ref="listing.messageId" v-on:close-all="closeAll" v-for="(listing, index) in filteredListings" :listing="listing" :key="listing.messageId"></listing-card>
           </div>
+          <div v-if="safeFilteredListingsLength == 0" class="no-listings">
+            Nothing to show!
+          </div>
         </div>
       </div>
     </div>

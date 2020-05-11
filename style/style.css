@@ -44,7 +44,6 @@ header {
   flex-grow: 1;
   max-height: 150px;
   overflow: hidden;
-  /*margin-bottom: ;*/
 }
 
 .expanded .listing-text {
@@ -108,6 +107,12 @@ img.discord-avatar {
 
 .listing-text p {
   margin-bottom: 0.5em;
+}
+
+.no-listings {
+  color: white;
+  text-align: center;
+  margin-top: 40px;
 }
 
 .filtering {
