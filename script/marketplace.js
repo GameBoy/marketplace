@@ -32,6 +32,7 @@ class DataFetcher {
         return response.json()
       })
       .then((jsonData) => {
+        console.log(jsonData)
         if (jsonData.length > 0) {
           localStorage.setItem('listingData', JSON.stringify(jsonData))
           return this.buildListings(jsonData);
@@ -57,7 +58,6 @@ class Listing {
   constructor(messageData) {
     this.messageData = messageData
     this.messageId = messageData.message_id
-    this.created = `${messageData.created.slice(0, messageData.created.length - 7)} UTC`
     this.avatarUrl = messageData.avatar_url
     this.attachments = messageData.attachments
 
@@ -78,6 +78,17 @@ class Listing {
 
   discordUrl() {
     return BASE_DISCORD_URL + this.messageId
+  }
+
+  postedDate() {
+    if (!this._postedDate) {
+      try {
+        this._postedDate = new Date(Date.parse(this.messageData.created)).toLocaleDateString()
+      } catch {
+        this._postedDate = `${this.messageData.created.slice(0, 10)} UTC`
+      }
+    }
+    return this._postedDate;
   }
 
   title() {

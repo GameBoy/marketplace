@@ -118,7 +118,7 @@ Vue.component('listing-card', {
               <div class="created">
                 <span class="text-muted">
                   posted
-                  {{ listing.created }}
+                  {{ listing.postedDate() }}
                   by
                 </span>
                 <img width="20" class="discord-avatar" :src="listing.avatarUrl">
