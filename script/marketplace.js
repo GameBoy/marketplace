@@ -6,6 +6,7 @@ const BUY = 'buy'
 const SELL_REGEX = /sell|selling|WTS|shipped/ig
 const WTS_REGEX = /WTS/g
 const SELL = 'sell'
+const SELL_MONEY_REGEX = /\$|€/ig
 const BASE_DISCORD_URL = "discord://discordapp.com/channels/246604458744610816/336895311081373707/" // just add message_id
 
 const BUY_OVERRIDES = {
@@ -105,6 +106,8 @@ class Listing {
         this._listingType = SELL;
       } else if (this.message.match(BUY_REGEX)) {
         this._listingType = BUY;
+      } else if (this.message.match(SELL_MONEY_REGEX)) {
+        this._listingType = SELL;
       } else {
         this._listingType = null;
       }
