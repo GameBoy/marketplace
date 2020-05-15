@@ -38,7 +38,6 @@ Vue.component('filtering', {
       if (this.state == 'all') { return true }
       else if (this.state == 'sell' && listing.sell()) { return true }
       else if (this.state == 'buy' && listing.buy()) { return true }
-      else if (this.state == 'unknown' && !listing.buy() && !listing.sell()) { return true }
       return false;
     },
     searchFilter(listing) {
@@ -61,7 +60,6 @@ Vue.component('filtering', {
           <button type="button" class="btn btn-sm btn-light" :class="{selected: state == 'all'}" @click="setState('all')">All</button>
           <button type="button" class="btn btn-sm btn-primary" :class="{selected: state == 'sell'}" @click="setState('sell')">Selling</button>
           <button type="button" class="btn btn-sm btn-success" :class="{selected: state == 'buy'}" @click="setState('buy')">Buying</button>
-          <button type="button" class="btn btn-sm btn-secondary" :class="{selected: state == 'unknown'}" @click="setState('unknown')">???</button>
         </div>
       </div>
     </div>
