@@ -3,9 +3,7 @@ Vue.component('filtering', {
   data: function() {
     return {
       searchTerm: "",
-      buying: true,
-      selling: true,
-      unknown: true
+      state: 'all'
     }
   },
   computed: {
@@ -19,14 +17,9 @@ Vue.component('filtering', {
         return `showing ${this.filteredLength} of ${this.listings.length}`
       }
     },
-    filterActive: function () {
-      return (
-        this.trimmedSearchTerm.length >= 3 ||
-        !this.buying ||
-        !this.selling ||
-        !this.unknown
-      )
-    }
+    filterActive: function() {
+      return this.trimmedSearchTerm.length >= 3 || this.state != 'all'
+    },
   },
   methods: {
     emitFilteredListings() {
@@ -42,13 +35,18 @@ Vue.component('filtering', {
       );
     },
     typeFilter(listing) {
-      if (this.buying && listing.buy()) { return true }
-      else if (this.selling && listing.sell()) { return true }
-      else if (this.unknown && !listing.buy() && !listing.sell()) { return true }
+      if (this.state == 'all') { return true }
+      else if (this.state == 'sell' && listing.sell()) { return true }
+      else if (this.state == 'buy' && listing.buy()) { return true }
+      else if (this.state == 'unknown' && !listing.buy() && !listing.sell()) { return true }
       return false;
     },
     searchFilter(listing) {
       return listing.text().match(new RegExp(this.trimmedSearchTerm, 'ig'));
+    },
+    setState(state) {
+      this.state = state;
+      this.emitFilteredListings();
     }
   },
   template: `
@@ -57,13 +55,14 @@ Vue.component('filtering', {
         <input type='text' v-model:value="searchTerm" placeholder="Enter a search term" class="form-control form-control-sm" @keyup="emitFilteredListings"/>
         <span class='filter-count'>{{countString}}</span>
       </div>
-      <div class='type-filter col-sm-5'>
-        <input type="checkbox" id="show-selling" v-model="selling" @change="emitFilteredListings"/>
-        <span class="badge badge-primary"><label for="show-selling">Selling</label></span>
-        <input type="checkbox" id="show-buying" v-model="buying" @change="emitFilteredListings"/>
-        <span class="badge badge-success"><label for="show-buying">Buying</label></span>
-        <input type="checkbox" id="show-unknown" v-model="unknown" @change="emitFilteredListings"/>
-        <span class="badge badge-secondary"><label for="show-unknown">???</label></span>
+
+      <div class="col-sm-5">
+        <div class="type-filter tfbg btn-group" role="group">
+          <button type="button" class="btn btn-sm btn-light" :class="{selected: state == 'all'}" @click="setState('all')">All</button>
+          <button type="button" class="btn btn-sm btn-primary" :class="{selected: state == 'sell'}" @click="setState('sell')">Selling</button>
+          <button type="button" class="btn btn-sm btn-success" :class="{selected: state == 'buy'}" @click="setState('buy')">Buying</button>
+          <button type="button" class="btn btn-sm btn-secondary" :class="{selected: state == 'unknown'}" @click="setState('unknown')">???</button>
+        </div>
       </div>
     </div>
   `

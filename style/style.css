@@ -146,12 +146,44 @@ img.discord-avatar {
 
 .filtering .type-filter {
   text-align: right;
+  float: right;
 }
 
 @media (max-width: 575.98px) {
   .filtering .type-filter {
     text-align: left;
+    float: none;
   }
+}
+
+.filtering .tfbg {
+  width: 200px;
+}
+
+.tfbg .btn {
+  font-weight: bold;
+  font-size: 0.7em;
+  opacity: 0.6;
+}
+
+.tfbg .btn.selected {
+  opacity: 1;
+    font-size: 0.825em;
+
+  z-index: 10;
+}
+
+.tfbg .btn.selected.btn-light {
+  box-shadow: 0px 0px 0px 1px #f8f9fa;
+}
+.tfbg .btn.selected.btn-primary {
+  box-shadow: 0px 0px 0px 1px #007bff;
+}
+.tfbg .btn.selected.btn-success {
+  box-shadow: 0px 0px 0px 1px #28a745;
+}
+.tfbg .btn.selected.btn-secondary {
+  box-shadow: 0px 0px 0px 1px #6c757d;
 }
 
 .filtering label {
