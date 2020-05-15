@@ -153,6 +153,7 @@ img.discord-avatar {
   .filtering .type-filter {
     text-align: left;
     float: none;
+    margin-top: 10px;
   }
 }
 
