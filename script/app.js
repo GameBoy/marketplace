@@ -38,6 +38,7 @@ Vue.component('filtering', {
       if (this.state == 'all') { return true }
       else if (this.state == 'sell' && listing.sell()) { return true }
       else if (this.state == 'buy' && listing.buy()) { return true }
+      else if (this.state == 'trade' && listing.trade()) { return true }
       return false;
     },
     searchFilter(listing) {
@@ -60,6 +61,7 @@ Vue.component('filtering', {
           <button type="button" class="btn btn-sm btn-light" :class="{selected: state == 'all'}" @click="setState('all')">All</button>
           <button type="button" class="btn btn-sm btn-primary" :class="{selected: state == 'sell'}" @click="setState('sell')">Selling</button>
           <button type="button" class="btn btn-sm btn-success" :class="{selected: state == 'buy'}" @click="setState('buy')">Buying</button>
+          <button type="button" class="btn btn-sm btn-trading" :class="{selected: state == 'trade'}" @click="setState('trade')">Trading</button>
         </div>
       </div>
     </div>
@@ -78,7 +80,7 @@ Vue.component('listing-card', {
       return this.listing.imageUrls()[0]
     },
     unknown: function() {
-      return (!this.listing.buy() && !this.listing.sell())
+      return (!this.listing.buy() && !this.listing.sell() && !this.listing.trade())
     },
     bodyHtml: function() {
       return (this.expanded ? this.listing.expandedHtml() : this.listing.collapsedHtml())
@@ -107,9 +109,12 @@ Vue.component('listing-card', {
         <div :class="{ 'col-md-9': imageUrl, 'col-md-12': !imageUrl }">
           <div class="card-body" @click="expand">
             <h5 class="card-title">
-              <span v-if="listing.sell()" class="badge badge-primary">Selling</span>
-              <span v-if="listing.buy()" class="badge badge-success">Buying</span>
-              <span v-if="unknown" class="badge badge-secondary">???</span>
+              <span :title="listing.matchType">
+                <span v-if="listing.sell()" class="badge badge-primary">Selling</span>
+                <span v-if="listing.buy()" class="badge badge-success">Buying</span>
+                <span v-if="listing.trade()" class="badge badge-trading">Trading</span>
+                <span v-if="unknown" class="badge badge-secondary">???</span>
+              </span>
               {{listing.title()}}
 
               <div class="created">

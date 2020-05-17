@@ -1,26 +1,28 @@
 const DATA_URL = 'https://gameboy.github.io/dmgAPI/market.json'
 const TITLE_REGEX = /\.|\\n|,/g
-const BUY_REGEX = /buy|buying|WTB|looking|trade/ig
-const WTB_REGEX = /WTB/g
-const BUY = 'buy'
-const SELL_REGEX = /sell|selling|WTS|shipped/ig
-const WTS_REGEX = /WTS/g
-const SELL = 'sell'
-const SELL_MONEY_REGEX = /\$|€/ig
 const BASE_DISCORD_URL = "discord://discordapp.com/channels/246604458744610816/336895311081373707/" // just add message_id
 
-const BUY_OVERRIDES = {
-  '706854690834350082': true,
-  '705304855895605318': true,
-  '704512974827552770': true,
-  '699381569122598924': true,
-  '710736584479342663': true, // May 15
-  '710616567972364309': true, // May 14
-}
-const SELL_OVERRIDES = {
-  '703956817184555048': true,
-  '704437780578828319': true,
-  '707823474957090886': true,
+const BUY_REGEX = /buy|buying|WTB|looking|trade/ig
+const BUY_EMOJI_REGEX = /<:WTB:\d*>|<:Buying:\d*>/g
+const BUY = 'buy'
+const SELL_REGEX = /sell|selling|WTS|shipped/ig
+const SELL_EMOJI_REGEX = /<:WTS:\d*>|<:Selling:\d*>/g
+const SELL_MONEY_REGEX = /\$|€/ig
+const SELL = 'sell'
+const TRADE_REGEX = /trade|trading|WTT/ig
+const TRADE_EMOJI_REGEX = /<:WTT:\d*>|<:Trading:\d*>/g
+const TRADE = 'trade'
+
+const OVERRIDES = {
+  '707823474957090886': [SELL],
+  '704437780578828319': [SELL],
+  '703956817184555048': [SELL],
+  '706854690834350082': [BUY],
+  '705304855895605318': [BUY],
+  '704512974827552770': [BUY],
+  '699381569122598924': [BUY],
+  '710616567972364309': [BUY], // May 14
+  '710736584479342663': [BUY], // May 15
 }
 
 class DataFetcher {
@@ -106,35 +108,50 @@ class Listing {
   }
 
   setListingType() {
-    if (this._listingType === undefined) {
-      if (SELL_OVERRIDES[this.messageId]) {
-        this._listingType = SELL;
-      } else if (BUY_OVERRIDES[this.messageId]) {
-        this._listingType = BUY;
-      } else if (this.message.match(WTS_REGEX) && !this.message.match(WTB_REGEX)) {
-        this._listingType = SELL;
-      } else if (this.message.match(WTB_REGEX) && !this.message.match(WTS_REGEX)) {
-        this._listingType = BUY;
-      } else if (this.message.match(SELL_REGEX)) {
-        this._listingType = SELL;
-      } else if (this.message.match(BUY_REGEX)) {
-        this._listingType = BUY;
-      } else if (this.message.match(SELL_MONEY_REGEX)) {
-        this._listingType = SELL;
-      } else {
-        this._listingType = null;
+    if (this._listingTypes === undefined) {
+      this._listingTypes = [];
+      if (OVERRIDES[this.messageId]) { // check overrides (tag multiple)
+        this._listingTypes = OVERRIDES[this.messageId];
+        this.matchType = 'override'
+      } else if (this.listingTypesFromEmoji(this.message).length > 0){ // check emoji (tag multiple)
+        this._listingTypes = this.listingTypesFromEmoji(this.message);
+        this.matchType = 'emoji'
+      } else if (this.message.match(SELL_REGEX)){ // check basic regexs (tag single)
+        this._listingTypes.push(SELL);
+        this.matchType = 'regex'
+      } else if (this.message.match(BUY_REGEX)){
+        this._listingTypes.push(BUY);
+        this.matchType = 'regex'
+      } else if (this.message.match(TRADE_REGEX)){
+        this._listingTypes.push(TRADE);
+        this.matchType = 'regex'
+      } else if (this.message.match(SELL_MONEY_REGEX)) { // check $$$ regex (tag sell)
+        this._listingTypes = [SELL];
+        this.matchType = 'money regex'
       }
     }
 
-    return this._listingType;
+    return this._listingTypes;
+  }
+
+  listingTypesFromEmoji(text) {
+    const listingTypes = []
+    if (this.message.match(SELL_EMOJI_REGEX)) { listingTypes.push(SELL) }
+    if (this.message.match(BUY_EMOJI_REGEX)) { listingTypes.push(BUY) }
+    if (this.message.match(TRADE_EMOJI_REGEX)) { listingTypes.push(TRADE) }
+    return listingTypes;
   }
 
   sell() {
-    return this._listingType == SELL;
+    return this._listingTypes.includes(SELL);
   }
 
   buy() {
-    return this._listingType == BUY;
+    return this._listingTypes.includes(BUY);
+  }
+
+  trade() {
+    return this._listingTypes.includes(TRADE);
   }
 
   imageUrls() {
@@ -217,6 +234,10 @@ class Listing {
         formattedLine += 'WTS '
       } else if (word.match(/<:Selling:\d*>/g)) {
         formattedLine += 'Selling '
+      } else if (word.match(/<:WTT:\d*>/g)) {
+        formattedLine += 'WTT '
+      } else if (word.match(/<:Trading:\d*>/g)) {
+        formattedLine += 'Trading '
       } else {
         formattedLine += `${word} `
       }

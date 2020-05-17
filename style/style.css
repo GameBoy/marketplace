@@ -130,7 +130,7 @@ img.discord-avatar {
 }
 
 .search .form-control {
-  width: 200px;
+  width: 220px;
   display: inline-block;
 }
 
@@ -158,7 +158,7 @@ img.discord-avatar {
 }
 
 .filtering .tfbg {
-  width: 170px;
+  width: 220px;
 }
 
 .tfbg .btn {
@@ -190,6 +190,21 @@ img.discord-avatar {
 .filtering label {
   margin-bottom: 0;
   cursor: pointer;
+}
+
+.badge-trading {
+  background-color: rgb(147, 21, 214);
+  color: white;
+}
+
+.btn-trading {
+  background-color: rgb(147, 21, 214);
+  color: white;
+}
+
+.btn-trading:hover {
+  background-color: rgb(122, 16, 179);
+  color: white;
 }
 
 hr {
