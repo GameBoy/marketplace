@@ -32,7 +32,7 @@
         </header>
         <div>
           <div>
-            <filtering :listings="listings" :filtered-length="safeFilteredListingsLength" @filtered-listings-updated="updateFilteredListings"></filtering>
+            <filtering :listings="listings" ref="filtering" :filtered-length="safeFilteredListingsLength" @filtered-listings-updated="updateFilteredListings" :initial-val="querySearch"></filtering>
           </div>
           <hr>
           <div>

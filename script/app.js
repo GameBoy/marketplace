@@ -1,10 +1,13 @@
 Vue.component('filtering', {
-  props: ['listings', 'filteredLength'],
+  props: ['listings', 'filteredLength', 'initialVal'],
   data: function() {
     return {
       searchTerm: "",
       state: 'all'
     }
+  },
+  mounted: function() {
+    this.searchTerm = this.initialVal;
   },
   computed: {
     trimmedSearchTerm: function() {
@@ -46,7 +49,7 @@ Vue.component('filtering', {
       return false;
     },
     searchFilter(listing) {
-      return listing.text().match(new RegExp(this.trimmedSearchTerm, 'ig'));
+      return listing.text().match(new RegExp(this.trimmedSearchTerm, 'ig')) || listing.messageId === this.trimmedSearchTerm;
     },
     setState(state) {
       this.state = state;
@@ -56,7 +59,7 @@ Vue.component('filtering', {
   template: `
     <div class='filtering row'>
       <div class='search col-sm-7'>
-        <input type='text' aria-label="search" v-model:value="searchTerm" placeholder="Enter a search term" class="form-control form-control-sm" @keyup="emitFilteredListings"/>
+        <input type='text' ref="search" aria-label="search" v-model:value="searchTerm" placeholder="Enter a search term" class="form-control form-control-sm" @keyup="emitFilteredListings"/>
         <button class="clear-btn btn btn-link" v-if="searchTerm.length > 0" @click="clearSearch">✗</button>
         <span class='filter-count'>{{countString}}</span>
       </div>
@@ -165,6 +168,7 @@ let app = new Vue({
       this.listings = newListings;
       this.filteredListings = newListings;
     }
+    this.$refs.filtering.emitFilteredListings();
   },
   computed: {
     safeFilteredListingsLength: function() {
@@ -173,6 +177,10 @@ let app = new Vue({
       } else {
         return this.listings.length
       }
+    },
+    querySearch: function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('search');
     }
   },
   methods: {
@@ -184,6 +192,6 @@ let app = new Vue({
     },
     updateFilteredListings: function(filteredListings) {
       this.filteredListings = filteredListings;
-    }
+    },
   }
 });
