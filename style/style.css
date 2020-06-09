@@ -134,6 +134,18 @@ img.discord-avatar {
   display: inline-block;
 }
 
+.search .clear-btn {
+  position: relative;
+  right: 40px;
+  bottom: 1px;
+  color: #495057;
+  line-height: 0.5;
+}
+
+.search .clear-btn:hover {
+  text-decoration: none;
+}
+
 .filtering .filter-count {
   font-size: 14px;
   margin-left: 10px;
