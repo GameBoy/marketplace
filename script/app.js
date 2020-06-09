@@ -52,7 +52,7 @@ Vue.component('filtering', {
   template: `
     <div class='filtering row'>
       <div class='search col-sm-7'>
-        <input type='text' v-model:value="searchTerm" placeholder="Enter a search term" class="form-control form-control-sm" @keyup="emitFilteredListings"/>
+        <input type='search' v-model:value="searchTerm" placeholder="Enter a search term" class="form-control form-control-sm" @keyup="emitFilteredListings"/>
         <span class='filter-count'>{{countString}}</span>
       </div>
 
