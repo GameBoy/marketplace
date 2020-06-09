@@ -148,7 +148,7 @@ img.discord-avatar {
 
 .filtering .filter-count {
   font-size: 14px;
-  margin-left: 10px;
+  margin-left: -36px; /* negative margin to fill space left from relative positioning clear icon */
   color: white;
 }
 

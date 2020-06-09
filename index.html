@@ -30,7 +30,8 @@
           <img class="emoji-img" src="img/wtt_emoji.png"/><code>:WTT:</code>,
           <img class="emoji-img" src="img/trading_emoji.png"/><code>:Trading:</code>.
         </header>
-        <div>
+
+        <main>
           <div>
             <filtering :listings="listings" ref="filtering" :filtered-length="safeFilteredListingsLength" @filtered-listings-updated="updateFilteredListings" :initial-val="querySearch"></filtering>
           </div>
@@ -41,7 +42,7 @@
           <div v-if="safeFilteredListingsLength == 0" class="no-listings">
             Nothing to show!
           </div>
-        </div>
+        </main>
       </div>
     </div>
 
