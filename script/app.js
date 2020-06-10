@@ -28,6 +28,7 @@ Vue.component('filtering', {
     clearSearch(){
       this.searchTerm = "";
       this.emitFilteredListings();
+      window.history.pushState({}, document.title, window.location.pathname);
     },
     emitFilteredListings() {
       this.$emit(
@@ -180,7 +181,7 @@ let app = new Vue({
     },
     querySearch: function() {
       const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get('search');
+      return urlParams.get('search') || '';
     }
   },
   methods: {
