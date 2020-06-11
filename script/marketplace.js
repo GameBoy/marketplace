@@ -86,11 +86,8 @@ class Listing {
 
   postedDate() {
     if (!this._postedDate) {
-      try {
-        this._postedDate = new Date(Date.parse(this.messageData.created)).toLocaleDateString()
-      } catch {
-        this._postedDate = `${this.messageData.created.slice(0, 10)} UTC`
-      }
+      const dateString = this.messageData.created.split('.')[0].replace(/ /g, 'T') + 'Z';
+      this._postedDate = new Date(Date.parse(dateString)).toLocaleDateString()
     }
     return this._postedDate;
   }
