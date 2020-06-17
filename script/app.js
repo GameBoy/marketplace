@@ -169,7 +169,11 @@ let app = new Vue({
       this.listings = newListings;
       this.filteredListings = newListings;
     }
-    this.$refs.filtering.emitFilteredListings();
+
+    // do initial filtering
+    this.$nextTick(() => {
+      this.$refs.filtering.emitFilteredListings();
+    });
   },
   computed: {
     safeFilteredListingsLength: function() {
