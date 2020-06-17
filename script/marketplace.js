@@ -14,7 +14,15 @@ const TRADE_EMOJI_REGEX = /<:WTT:\d*>|<:Trading:\d*>/g
 const TRADE = 'trade'
 
 const OVERRIDES = {
-  // '710736584479342663': [BUY],
+  '707823474957090886': [SELL],
+  '704437780578828319': [SELL],
+  '703956817184555048': [SELL],
+  '706854690834350082': [BUY],
+  '705304855895605318': [BUY],
+  '704512974827552770': [BUY],
+  '699381569122598924': [BUY],
+  '710616567972364309': [BUY], // May 14
+  '710736584479342663': [BUY], // May 15
 }
 
 class DataFetcher {
@@ -78,11 +86,8 @@ class Listing {
 
   postedDate() {
     if (!this._postedDate) {
-      try {
-        this._postedDate = new Date(Date.parse(this.messageData.created)).toLocaleDateString()
-      } catch {
-        this._postedDate = `${this.messageData.created.slice(0, 10)} UTC`
-      }
+      const dateString = this.messageData.created.split('.')[0].replace(/ /g, 'T') + 'Z';
+      this._postedDate = new Date(Date.parse(dateString)).toLocaleDateString()
     }
     return this._postedDate;
   }
