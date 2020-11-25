@@ -2,28 +2,12 @@ const DATA_URL = 'https://gameboy.github.io/dmgAPI/json/market.json'
 const TITLE_REGEX = /\.|\\n|,/g
 const BASE_DISCORD_URL = "discord://discordapp.com/channels/246604458744610816/336895311081373707/" // just add message_id
 
-const BUY_REGEX = /buy|buying|WTB|looking|trade/ig
 const BUY_EMOJI_REGEX = /<:WTB:\d*>|<:Buying:\d*>/g
 const BUY = 'buy'
-const SELL_REGEX = /sell|selling|WTS|shipped/ig
 const SELL_EMOJI_REGEX = /<:WTS:\d*>|<:Selling:\d*>/g
-const SELL_MONEY_REGEX = /\$|€/ig
 const SELL = 'sell'
-const TRADE_REGEX = /trade|trading|WTT/ig
 const TRADE_EMOJI_REGEX = /<:WTT:\d*>|<:Trading:\d*>/g
 const TRADE = 'trade'
-
-const OVERRIDES = {
-  '707823474957090886': [SELL],
-  '704437780578828319': [SELL],
-  '703956817184555048': [SELL],
-  '706854690834350082': [BUY],
-  '705304855895605318': [BUY],
-  '704512974827552770': [BUY],
-  '699381569122598924': [BUY],
-  '710616567972364309': [BUY], // May 14
-  '710736584479342663': [BUY], // May 15
-}
 
 class DataFetcher {
   cachedListings() {
@@ -105,26 +89,7 @@ class Listing {
 
   setListingType() {
     if (this._listingTypes === undefined) {
-      this._listingTypes = [];
-      if (OVERRIDES[this.messageId]) { // check overrides (tag multiple)
-        this._listingTypes = OVERRIDES[this.messageId];
-        this.matchType = 'override'
-      } else if (this.listingTypesFromEmoji(this.message).length > 0){ // check emoji (tag multiple)
-        this._listingTypes = this.listingTypesFromEmoji(this.message);
-        this.matchType = 'emoji'
-      } else if (this.message.match(SELL_REGEX)){ // check basic regexs (tag single)
-        this._listingTypes.push(SELL);
-        this.matchType = 'regex'
-      } else if (this.message.match(BUY_REGEX)){
-        this._listingTypes.push(BUY);
-        this.matchType = 'regex'
-      } else if (this.message.match(TRADE_REGEX)){
-        this._listingTypes.push(TRADE);
-        this.matchType = 'regex'
-      } else if (this.message.match(SELL_MONEY_REGEX)) { // check $$$ regex (tag sell)
-        this._listingTypes = [SELL];
-        this.matchType = 'money regex'
-      }
+      this._listingTypes = this.listingTypesFromEmoji(this.message);
     }
 
     return this._listingTypes;
