@@ -1,4 +1,4 @@
-const DATA_URL = 'https://gameboy.github.io/dmgAPI/market.json'
+const DATA_URL = 'https://gameboy.github.io/dmgAPI/json/market.json'
 const TITLE_REGEX = /\.|\\n|,/g
 const BASE_DISCORD_URL = "discord://discordapp.com/channels/246604458744610816/336895311081373707/" // just add message_id
 
@@ -86,8 +86,7 @@ class Listing {
 
   postedDate() {
     if (!this._postedDate) {
-      const dateString = this.messageData.created.split('.')[0].replace(/ /g, 'T') + 'Z';
-      this._postedDate = new Date(Date.parse(dateString)).toLocaleDateString()
+      this._postedDate = new Date(this.messageData.created).toLocaleDateString()
     }
     return this._postedDate;
   }
